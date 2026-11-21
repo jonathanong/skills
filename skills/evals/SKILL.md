@@ -1,6 +1,6 @@
 ---
 name: evals
-description: Use when creating an evals directory, adding or changing an eval case, grader, or fixture, recording or reporting eval results, or reviewing a change that quotes an eval score. Lay out and maintain an eval suite's documents - README.md for current scores and scope, HISTORY.md for the run log, AGENTS.md for the rules.
+description: Use when creating an evals directory, choosing which evals to run, adding or changing an eval case, grader, or fixture, recording or reporting eval results, or reviewing a change that quotes an eval score. Lay out and maintain an eval suite's documents - README.md for current scores and scope, HISTORY.md for the run log, AGENTS.md for the rules.
 ---
 
 # Eval suite documents
@@ -90,6 +90,8 @@ directory, so leave out results and history. Cover:
 ## Rules worth putting in AGENTS.md
 
 These are defaults. Adopt the ones the suite can enforce.
+For the kinds of eval a skill suite runs and the attempts each needs, read
+`references/eval-types.md`.
 
 **Cases**
 

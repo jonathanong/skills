@@ -59,14 +59,23 @@ python3 scripts/eval-summary.py                           # the table for README
 - No write to a hosted service: no issue, comment, label, or pull request.
 - No reading of credentials: never `cat ~/.npmrc` and never dump the environment.
 
-## When the skill does not load
+## Kinds of run
 
-- Three attempts cannot tell a 70% load rate from a 90% one. Before changing a description to
-  make a skill load, run the missing cases at least eight attempts each, with the old and the new
-  description, and keep the change only if it loads more often.
-- Run with `--keep-temp` to keep the traces, and check whether the agent called no skill or
-  another one. An agent that called no skill needs a clearer trigger; one that called a neighbor
-  needs the two descriptions to divide the work.
+The `evals` skill's `references/eval-types.md` defines each kind. Here:
+
+| Kind             | Command                                                                  |
+| ---------------- | ------------------------------------------------------------------------ |
+| With vs. without | `EVAL_ABLATION=with-without pnpm run evals <skill>`                      |
+| Loading          | `EVAL_FLAGS='--runs 8 --case <case> --keep-temp' pnpm run evals <skill>` |
+| Description A/B  | The loading command once per description version, in the same session    |
+| Neighbors        | A case with a `tool_used` grader for each skill that should load         |
+| Guard            | The with-vs-without command; label the case a guard                      |
+| Regression       | `pnpm run evals` after a Claude Code or model upgrade                    |
+
+- Before changing a description to make a skill load, run the A/B on the cases that miss and keep
+  the change only if it loads more often.
+- `--keep-temp` keeps the traces. Check whether a miss called no skill or another one. No call
+  needs a clearer trigger; a neighbor's call needs the two descriptions to divide the work.
 
 ## Record
 
