@@ -37,7 +37,7 @@ Agent Sonnet, judge Opus, Claude Code 2.1.330. 76 cases.
 
 | Case                                                               | Score | Passed | Without plugin |
 | ------------------------------------------------------------------ | ----- | ------ | -------------- |
-| `agent-instructions/path-scoped-rules` (rerun)                     | 1.00  | 3 of 3 | 0.00           |
+| `agent-instructions/path-scoped-rules` (rerun)                     | 1.00  | 3 of 3 | 0.33           |
 | `agent-instructions/root-agents-md-placement` (rerun)              | 1.00  | 3 of 3 | 0.00           |
 | `agent-workflow/review-round-dispositions`                         | 1.00  | 3 of 3 | 0.00           |
 | `bounded-iteration/review-dispatcher-predicate-and-job-id`         | 0.50  | 1 of 3 | 1.00           |

@@ -20,19 +20,24 @@ is loaded only when it is needed, and nowhere else.
 | A rule a machine can check                              | A lint rule or CI check       | On every change, without fail       |
 | What the code, schema, or configuration already shows   | Nowhere                       | Read from the source                |
 
-- **`AGENTS.md`** holds short, imperative principles. Give it a size budget and hold to it. Move
+- **`AGENTS.md`** holds short, imperative principles. Give it a size budget and enforce it with a check, as for any limit. Move
   anything only some tasks need into a skill, and anything that explains into docs.
 - **A skill** holds what one kind of work needs: steps, defaults, and the reasons. Open its
   description with when to use it ("Use when writing or reviewing ..."); an agent loads a skill
-  far more often when the trigger comes first. Keep the body short and move long detail into
+  far more often when the trigger comes first. Keep the description short and distinct from its
+  neighbors': every installed description is loaded in every session, and two that overlap split
+  the loads between them. Keep the body short and move long detail into
   reference files the body links with one line each.
 - **Docs** are for people first: a wiki that explains how a system works. Lead with tables and
   Mermaid diagrams, and spend the prose on why a design was chosen and on gotchas a reader would
   not guess. For what belongs in a document, use the `documentation` skill; for how to structure
   one, use `technical-writing`.
 - **Do not document what the code shows.** File lists, function signatures, configuration values,
-  and dependency lists drift the day they are copied. Name the file or setting and let the reader
+  and dependency lists drift the day they are copied. Name the setting, or the folder that holds it, and let the reader
   open it.
+- **Point at folders and names, not lines or files.** A line number is wrong after the next edit,
+  and a file path breaks on a rename. Name the folder, the command, or the symbol to search for.
+  When a rule must name a path, change the rule in the same change that moves it.
 - **Enforce what you can.** A rule in prose is advice an agent may miss. When a pattern can be
   detected, add the check (see `static-analysis-checklist`) and keep at most one line in
   `AGENTS.md` that names it.
@@ -41,11 +46,16 @@ is loaded only when it is needed, and nowhere else.
 
 - Scope a rule to the directory it governs with a nested `AGENTS.md`. A nested file adds to its
   parent and never repeats it.
+- The most specific instruction wins: a nested `AGENTS.md` over the root one, and the
+  repository's files over a shared skill. A person's direct instruction overrides them all. Say so
+  in a shared skill, so it defers to the repository.
 - Write instructions in portable files: `AGENTS.md`, skills, and docs. Do not put rules in one
   harness's own rule format, such as Claude Code's `.claude/rules/`; another agent never sees
   them. Use a nested `AGENTS.md` for a path-scoped rule.
 - When a harness reads only its own file name, such as `CLAUDE.md`, make that file a symlink to
   `AGENTS.md` or a one-line import of it. Never keep two copies.
+- When one agent hands work to another, name the `AGENTS.md` files and skills to read instead of
+  retyping their rules. A retyped rule is a second copy that drifts.
 - Keep generic skills in a shared plugin and a repository's own skills in that repository. A
   rule that holds only for one repository does not belong in a shared skill.
 

@@ -46,3 +46,15 @@ each with the arms and attempt count it needs, and report each kind of result on
 
 - Rerun the suite after each model or harness upgrade, and record the versions with the result.
   Loading rates move with the harness even when no skill changed.
+
+## From real failures
+
+- When an agent gets something wrong in real work, first write a case that reproduces the
+  mistake and check that it fails, then change the rule or description. The case measures the fix
+  and catches the mistake if it returns.
+
+## Retiring a rule
+
+- When a case starts passing in the without arm, for example after a model upgrade, the rule it
+  tests may no longer earn its place in context. Rerun it with more attempts and, if it still
+  passes without the skill, consider deleting the rule rather than keeping it forever.

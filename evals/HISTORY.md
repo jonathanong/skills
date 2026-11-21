@@ -4,6 +4,26 @@ This log only grows, newest entry first. Scores in different entries are not com
 case, grader, fixture, or model changed between them; each entry says what changed. The current
 scores are in [README.md](README.md).
 
+## 2026-11-21: more `agent-instructions` and `evals` rules
+
+Commit after the previous entry, Sonnet agent, Opus judge, Claude Code 2.1.330, both arms, three
+attempts, $1.25.
+
+- **`agent-instructions`:** enforce the `AGENTS.md` size budget with a check; point at folders,
+  commands, or symbols, not line numbers or file paths; the most specific instruction wins; a
+  handoff names the files and skills to read instead of retyping rules; keep descriptions short
+  and distinct.
+- **`evals` reference:** write a case from a real failure before changing the rule, and consider
+  retiring a rule whose case passes without the skill. The `evals` cases were not rerun.
+
+| Case                                          | With | Passed | Without |
+| --------------------------------------------- | ---- | ------ | ------- |
+| `agent-instructions/path-scoped-rules`        | 1.00 | 3 of 3 | 0.33    |
+| `agent-instructions/root-agents-md-placement` | 1.00 | 3 of 3 | 0.00    |
+
+The without arm passed `path-scoped-rules` once in three, where the previous entry's run passed it
+in none; the case still separates the arms.
+
 ## 2026-11-21: new `agent-instructions` skill, and kinds of eval
 
 Commit after `bd25591`, Sonnet agent, Opus judge, Claude Code 2.1.330, about $6 in total.
