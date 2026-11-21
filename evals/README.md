@@ -11,14 +11,15 @@ skill, and that its answer made the decision the skill asks for.
 
 ## Current results
 
-Agent Sonnet, judge Opus, Claude Code 2.1.330. 74 cases.
+Agent Sonnet, judge Opus, Claude Code 2.1.330. 76 cases.
 
 - **Run:** the full run on 2026-11-21, with the plugin only, three attempts per case (78 cases,
   234 attempts, $35.50). It ran on the working tree committed as `9f4aaf5`, before the
   `http-api-design` description named edge workers. Four of its cases were dropped afterwards.
 - **Rows marked "(rerun)"** are from later two-arm runs, three attempts per arm: the edge-claims
   and topology rows after the `http-api-design` change, and five new cases after their graders
-  were narrowed in review.
+  were narrowed in review, and the two `agent-instructions` cases. The `documentation` rows
+  marked "(rerun)" are from a plugin-only run after its description stopped naming `AGENTS.md`.
 - **"Without plugin"** comes from separate runs; see "How to read the numbers".
 - **The skill loaded in 224 of the 234 attempts.** The misses were in four cases:
   `documentation/write-scale-numbers` (0 of 3, then 2 of 3 on a rerun), the edge-claims case (0
@@ -36,14 +37,16 @@ Agent Sonnet, judge Opus, Claude Code 2.1.330. 74 cases.
 
 | Case                                                               | Score | Passed | Without plugin |
 | ------------------------------------------------------------------ | ----- | ------ | -------------- |
+| `agent-instructions/path-scoped-rules` (rerun)                     | 1.00  | 3 of 3 | 0.00           |
+| `agent-instructions/root-agents-md-placement` (rerun)              | 1.00  | 3 of 3 | 0.00           |
 | `agent-workflow/review-round-dispositions`                         | 1.00  | 3 of 3 | 0.00           |
 | `bounded-iteration/review-dispatcher-predicate-and-job-id`         | 0.50  | 1 of 3 | 1.00           |
 | `bounded-iteration/review-staged-reconciler`                       | 1.00  | 3 of 3 | 0.00           |
 | `dependabot/groups-by-family`                                      | 1.00  | 3 of 3 | 0.33           |
 | `dependabot/request-update-check`                                  | 1.00  | 3 of 3 | 0.50           |
 | `dependabot/review-actions-cooldown`                               | 1.00  | 3 of 3 | 0.67           |
-| `documentation/review-readme-drift`                                | 1.00  | 3 of 3 | 0.67           |
-| `documentation/write-scale-numbers`                                | 0.00  | 0 of 3 | 0.00           |
+| `documentation/review-readme-drift` (rerun)                        | 0.83  | 2 of 3 | 0.67           |
+| `documentation/write-scale-numbers` (rerun)                        | 0.67  | 2 of 3 | 0.00           |
 | `evals/document-new-suite`                                         | 1.00  | 3 of 3 | 0.00           |
 | `evals/record-partial-rerun`                                       | 1.00  | 3 of 3 | 0.00           |
 | `feature-rollout/dark-route-without-caller`                        | 1.00  | 3 of 3 | 1.00           |
@@ -121,6 +124,8 @@ passed, so 1.00 means every grader passed on every attempt.
 
 | Case                                                               | Checks that the agent                                                                                           |
 | ------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| `agent-instructions/path-scoped-rules`                             | Scopes rules with a nested `AGENTS.md`, not `.claude/rules/`, so every agent sees them.                         |
+| `agent-instructions/root-agents-md-placement`                      | Moves a release procedure out of the root `AGENTS.md` and drops a file listing the code shows.                  |
 | `agent-workflow/review-round-dispositions`                         | Gives each review comment one disposition and settles the round with a single push.                             |
 | `bounded-iteration/review-dispatcher-predicate-and-job-id`         | Flags a dispatcher predicate no index can serve and a job id keyed only by the entity.                          |
 | `bounded-iteration/review-staged-reconciler`                       | Asks for one job per reconciler stage, with no shared budget, error list, or cursor map.                        |

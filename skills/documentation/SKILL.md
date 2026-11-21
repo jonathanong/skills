@@ -1,6 +1,6 @@
 ---
 name: documentation
-description: Use when writing or reviewing a README, a docs page, a code comment, or an AGENTS.md / CLAUDE.md file, including a diff that adds or changes any of them. Decide what belongs in docs, code comments, and agent instruction files, so they do not drift from the code.
+description: Use when writing or reviewing a README, a docs page, or a code comment, including a diff that adds or changes one. Decide what belongs in docs and comments so they do not drift from the code. For AGENTS.md and skills, also use agent-instructions.
 ---
 
 # Documentation and comments
@@ -37,9 +37,5 @@ code cannot say, and link to the code for the rest.
 
 ## Agent instruction files
 
-- Keep `AGENTS.md` and similar files short. They are loaded into every session, so each line
-  costs context on every task. Give each file a size budget and hold to it.
-- State a rule once. A nested file adds to its parent; it does not repeat it. Do not copy a
-  shared instruction file into a second one, link it.
-- Write rules, not explanations of the codebase. Move reference material to a document the rule
-  links to, so it is read only when needed.
+For what goes in `AGENTS.md`, a skill, or a docs page, and how they link, use the
+`agent-instructions` skill.

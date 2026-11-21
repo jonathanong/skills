@@ -81,9 +81,10 @@ on top, in its `AGENTS.md`. Skills load as `jong-skills:<skill>`, for example
 | [`postgres-partitioning-uuid-v7`](skills/postgres-partitioning-uuid-v7/SKILL.md)       | Partitioning and pruning a table keyed by UUIDv7.                              |
 | [`bounded-iteration`](skills/bounded-iteration/SKILL.md)                               | Writing a sweep, backfill, dispatcher, or list read that must stay bounded.    |
 | [`glide-mq`](skills/glide-mq/SKILL.md)                                                 | Designing glide-mq queues, lanes, concurrency, rate limits, and leases.        |
-| [`evals`](skills/evals/SKILL.md)                                                       | Documenting an eval suite: current scores, run history, and rules.             |
+| [`evals`](skills/evals/SKILL.md)                                                       | Choosing kinds of eval, and documenting scores, run history, and rules.        |
 | [`pr-description`](skills/pr-description/SKILL.md)                                     | Writing a pull request description: problem, change, impact, before/after.     |
-| [`documentation`](skills/documentation/SKILL.md)                                       | Deciding what goes in docs, comments, and agent instruction files.             |
+| [`documentation`](skills/documentation/SKILL.md)                                       | Deciding what goes in docs and code comments.                                  |
+| [`agent-instructions`](skills/agent-instructions/SKILL.md)                             | Deciding what goes in `AGENTS.md`, a skill, docs, or a check.                  |
 | [`technical-writing`](skills/technical-writing/SKILL.md)                               | Structuring a document for scanning: summary first, audiences, facts, terms.   |
 | [`test-authoring`](skills/test-authoring/SKILL.md)                                     | Which tests to write; fixtures, mocks, guards; Vitest, Storybook, Swift, .NET. |
 | [`playwright-authoring`](skills/playwright-authoring/SKILL.md)                         | Writing browser tests: what needs a browser, locators, and test ids.           |

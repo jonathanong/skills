@@ -4,6 +4,37 @@ This log only grows, newest entry first. Scores in different entries are not com
 case, grader, fixture, or model changed between them; each entry says what changed. The current
 scores are in [README.md](README.md).
 
+## 2026-11-21: new `agent-instructions` skill, and kinds of eval
+
+Commit after `bd25591`, Sonnet agent, Opus judge, Claude Code 2.1.330, about $6 in total.
+
+- **New skill `agent-instructions`:** where an instruction lives (`AGENTS.md`, a skill, docs, a
+  check, or nowhere when the code shows it), portable files over harness-specific rule formats,
+  linked and link-checked docs, capturing decisions outside memory, and evals for skills. The
+  "Agent instruction files" rules moved here from `documentation`, whose description no longer
+  names `AGENTS.md`.
+- **Two cases:** `root-agents-md-placement` and `path-scoped-rules`.
+- **Description A/B on `path-scoped-rules`,** eight attempts each, same session: the first
+  description (naming `AGENTS.md`, `CLAUDE.md`, skills, and docs) loaded the skill in 0 of 8, with
+  4 of 8 correct answers. Adding "rules or instructions for coding agents" and "path-scoped rules
+  such as .claude/rules or Cursor rules" loaded it in 7 of 8, with 8 of 8 correct. The misses
+  called no tool at all.
+- **Final two-arm run,** three attempts per arm, after the rules on decisions, memory, numbers,
+  and evals were added:
+
+| Case                                          | With | Passed | Without |
+| --------------------------------------------- | ---- | ------ | ------- |
+| `agent-instructions/path-scoped-rules`        | 1.00 | 3 of 3 | 0.00    |
+| `agent-instructions/root-agents-md-placement` | 1.00 | 3 of 3 | 0.00    |
+
+- **`documentation` rerun,** plugin only, after its description change: `review-readme-drift`
+  2 of 3 (one attempt called no skill), `write-scale-numbers` 2 of 3. Three attempts cannot tell
+  this from the earlier 3 of 3 and 2 of 3.
+- **`evals` skill:** a new reference lists the kinds of eval a skill suite runs (with vs.
+  without, loading, description A/B, neighbors, guard, regression) with the attempts each needs.
+  `evals/AGENTS.md` maps each kind to its command here, replacing "When the skill does not load". The
+  `evals` description now also names choosing which evals to run; its cases were not rerun.
+
 ## 2026-11-21: review fixes to the new cases, and `packageExtensions` corrected
 
 Commit after `3bc6ef4`, Sonnet agent, Opus judge, Claude Code 2.1.330, both arms, three attempts,
