@@ -24,20 +24,29 @@ Read every applicable `AGENTS.md` first. Repository-local policy overrides these
 
 Most writes need no lock: a comment, a like, a follow, a profile edit. Each lock adds waiting,
 deadlock risk, and a reason for the next reader to keep it, and one held too long stalls every
-writer queued behind it. Start with none.
+writer queued behind it. Start with none. When more than one mechanism is correct, pick the
+simplest.
 
-- Lock only for an exact quantity: money, a balance, a ledger, inventory, anything that must never
+- Lock for an exact quantity: money, a balance, a ledger, inventory, anything that must never
   drift. Even there, prefer a conditional write
   (`UPDATE stock SET qty = qty - $1 WHERE sku = $2 AND qty >= $1`) or a constraint. When the rule
   spans rows those cannot express, a row lock (`FOR UPDATE`) on the rows the transaction writes,
   or on their parent, is acceptable.
+- Also lock for a rare race on a privacy, legal, or irreversible invariant: an account-deletion
+  fence, a legal hold, a delete in an outside store that cannot be undone. Lock the aggregate's
+  root row (`SELECT ... FROM users WHERE id = $1 FOR UPDATE`, or `FOR SHARE` for the side that
+  only needs it to stay put), even when the transaction does not write that row. Take an advisory
+  lock only when no row exists to lock, or when the critical section must span transactions or
+  outside I/O; then hold it on a dedicated connection and release it in a `finally`.
+  A cap or a "don't remove the last X" guard is not such an invariant, even when it protects
+  access; it stays best effort, below.
 - Anywhere else, never lock a read set or a parent row to serialize writers.
-- Every lock is transaction-scoped and short, and:
+- Except for that advisory case, every lock is transaction-scoped and short, and:
   - waits a bounded time: `NOWAIT` or `lock_timeout` in a request path, returning 409;
   - takes rows in a fixed order, parent before child, so two writers cannot deadlock;
   - covers no outside call. An enqueue is an outside call: commit, then enqueue. A slow queue
     store inside the transaction stretches every lock it holds.
-- Avoid advisory locks. Prefer a constraint, a conditional write, or `SERIALIZABLE`, below. When a
+- Otherwise avoid advisory locks. Prefer a constraint, a conditional write, or `SERIALIZABLE`, below. When a
   change does take one, it says why those do not fit, and a review checks the lock itself: it is
   transaction-scoped, its wait is bounded (`pg_try_advisory_xact_lock`, or `lock_timeout`; the
   blocking form holds a pooled connection while it waits), and its key covers exactly the writers
@@ -51,11 +60,14 @@ writer queued behind it. Start with none.
   one active row per parent) is closed by the narrowest of: a constraint, a conditional write
   (`UPDATE ... WHERE <condition>`, `INSERT ... ON CONFLICT`), or, for a rare race across rows, a
   `SERIALIZABLE` transaction whose `40001` is returned as 409 with no retry. A scheduled job leaves
-  the work to its next run. Never close a race with a wider lock.
+  the work to its next run. Outside the two lock cases above, never close a race with a wider lock.
 - Do not add generation, revision, claim, or counter columns to coordinate concurrent writers. Make
   the write idempotent or use the options above. Two exceptions: an exact quantity, and an
   optimistic version column on an entity people edit by hand, so a lost update returns 409. A
   lease token on leased work is not a coordination column.
+- Do not keep a counter or rollup table current with triggers when that needs global or ordered
+  locks to avoid deadlocks. Compute each closed period once, with a scheduled job or a
+  materialized view, and read the open period from the source rows.
 - Remove a lock by deleting it, not by swapping in another serializer.
 
 For query shape, read [performance patterns](../postgres-node-performance-tuning/references/performance-patterns.md).

@@ -4,6 +4,38 @@ This log only grows, newest entry first. Scores in different entries are not com
 case, grader, fixture, or model changed between them; each entry says what changed. The current
 scores are in [README.md](README.md).
 
+## 2026-11-21: locks for rare privacy, legal, and irreversible invariants
+
+Commit after `bd25591`, Sonnet agent, Opus judge, Claude Code 2.1.330, $7.51 in total.
+
+- **Rule change:** `postgres-schema-design` now allows a lock for a rare race on a privacy,
+  legal, or irreversible invariant (an account-deletion fence, a legal hold, a delete in an
+  outside store): a `FOR SHARE` or `FOR UPDATE` on the aggregate's root row even when it is not
+  written, and an advisory lock only when no row exists or the section spans transactions or
+  outside I/O. The simplest correct mechanism wins. A trigger-maintained counter or rollup that
+  needs global or ordered locks is replaced by closed periods computed once. The default (no
+  lock, constraint or conditional write, `SERIALIZABLE` and 409 for rare races) is unchanged.
+- **Cases:** added `rollup-trigger-deadlocks`. `deletion-fence-root-row-lock` was dropped: it
+  scored 1.00 without the plugin in three attempts, and no case for the exception fails without
+  it, so it could not stand as a guard.
+- **Two-arm run,** three attempts per arm:
+
+| Case                                                     | With | Passed | Without |
+| -------------------------------------------------------- | ---- | ------ | ------- |
+| `postgres-schema-design/checkout-exact-stock`            | 1.00 | 3 of 3 | 0.67    |
+| `postgres-schema-design/deletion-fence-root-row-lock`    | 1.00 | 3 of 3 | 1.00    |
+| `postgres-schema-design/exact-cap-no-lock`               | 1.00 | 3 of 3 | 0.00    |
+| `postgres-schema-design/review-advisory-lock-key`        | 0.67 | 1 of 3 | 1.00    |
+| `postgres-schema-design/review-last-admin-advisory-lock` | 0.50 | 1 of 3 | 0.00    |
+| `postgres-schema-design/rollup-trigger-deadlocks`        | 1.00 | 3 of 3 | 0.00    |
+
+- **Last-admin regression:** a six-attempt rerun with traces passed 4 of 6. Both failures
+  recommended deleting the lock; one added that `FOR UPDATE` on the organization row would fit if
+  the guard had to be exact, which the new root-row wording invites. The exception now says a cap
+  or a "don't remove the last X" guard is not such an invariant. A second six-attempt rerun passed
+  6 of 6.
+- **`review-advisory-lock-key`** missed only on loading (two attempts called no skill), as before.
+
 ## 2026-11-21: review fixes to the new cases, and `packageExtensions` corrected
 
 Commit after `3bc6ef4`, Sonnet agent, Opus judge, Claude Code 2.1.330, both arms, three attempts,
